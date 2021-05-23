@@ -5,9 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello Github Actions" > index.html
-      - name: GitHub Pages action
-        uses: peaceiris/actions-gh-pages@v3.7.3
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+      - run: |
+          git config --local user.name "${GITHUB_USER}"
+          git config --local user.email ${GITHUB_EMAIL}
+          git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
+          git add docs
+          git commit -m "Actions Test."
+          git push origin main
+
