@@ -4,9 +4,17 @@ jobs:
   cmd-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
       - run: |
           mkdir ~/.ssh
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-          echo ${{ secrets.WEBLOG_DEPLOY_SECRET }} > ~/.ssh/id_rsa
+          echo "${{ secrets.WEBLOG_DEPLOY_SECRET }}" > ~/.ssh/id_rsa
           chmod 0400 ~/.ssh/id_rsa
+          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+          git config --local user.name $(git log -1 --pretty=format:"%an")
+          git config --local user.email $(git log -1 --pretty=format:"%ae")
+          git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
       - run: bash scripts/deploy-pages.bash
+
