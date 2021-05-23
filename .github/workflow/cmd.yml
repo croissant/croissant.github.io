@@ -1,0 +1,7 @@
+name: cmd test
+on: [push]
+jobs:
+  cmd-test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello Github Actions" > docs/index.html
