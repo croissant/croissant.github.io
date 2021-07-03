@@ -1,20 +1,24 @@
-name: cmd test
+name: create pages
 on: [push]
 jobs:
-  cmd-test:
+  create_pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: "main"
-      - run: |
-          mkdir ~/.ssh
-          echo "${{ secrets.WEBLOG_DEPLOY_SECRET }}" > ~/.ssh/id_rsa
-          chmod 0400 ~/.ssh/id_rsa
-          echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-          git config --local user.name $(git log -1 --pretty=format:"%an")
-          git config --local user.email $(git log -1 --pretty=format:"%ae")
-          git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
-      - run: docker run --rm -v $(pwd):/src klakegg/hugo:0.84.4-ci
 
+      - name: Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.84.4'
+
+      - name: build pages
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3        
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
