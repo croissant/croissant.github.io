@@ -4,6 +4,4 @@ title = "My New Hugo Site"
 
 theme = "piercer"
 
-[[params.social]]
-name = "github"
-url = "https://github.com"
+publishDir = "docs"

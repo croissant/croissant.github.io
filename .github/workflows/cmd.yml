@@ -16,5 +16,5 @@ jobs:
           git config --local user.name $(git log -1 --pretty=format:"%an")
           git config --local user.email $(git log -1 --pretty=format:"%ae")
           git remote set-url origin git@github.com:${GITHUB_REPOSITORY}.git
-      - run: bash scripts/deploy-pages.bash
+      - run: docker run --rm -v $(pwd):/src klakegg/hugo:0.84.4-ci
 
